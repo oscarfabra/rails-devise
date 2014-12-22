@@ -1,11 +1,22 @@
 class User < ActiveRecord::Base
 
-  # attr_accessor :signin
+  attr_accessor :login
 
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
 
+  validates :username, uniqueness: { case_sensitive: false }
 
+  # Overwrites devise function to authenticate using sign_in field
+  def self.find_first_by_auth_conditions(warden_conditions)
+    conditions = warden_conditions.dup
+    if login = conditions.delete(:login)
+      where(conditions).where(["lower(username) = :value OR lower(email) = :value",
+                               { :value => login.downcase }]).first
+    else
+      where(conditions).first
+    end
+  end
 end

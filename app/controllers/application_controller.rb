@@ -6,10 +6,11 @@ class ApplicationController < ActionController::Base
   before_filter :configure_permitted_parameters, if: :devise_controller?
 
   protected
+
     # Configures mass assignment rules for the devise controllers
     def configure_permitted_parameters
-      devise_parameter_sanitizer.for(:sign_in) {
-          |u| u.permit(:email, :username)
+      devise_parameter_sanitizer.for(:login) {
+          |u| u.permit(:login)
       }
       devise_parameter_sanitizer.for(:sign_up) {
           |u| u.permit(:email, :username, :password, :password_confirmation)
