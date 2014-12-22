@@ -1,7 +1,9 @@
 class RegistrationsController < Devise::RegistrationsController
+
   def edit
     super
   end
+
   def update
     new_params = params.require(:user).permit(:email,
                                               :username,
@@ -9,14 +11,32 @@ class RegistrationsController < Devise::RegistrationsController
                                               :password,
                                               :password_confirmation)
 
+    # Edit data without needing to change the password
+    change_password = true
+    if params[:user][:password].blank?
+      params[:user].delete("password")
+      params[:user].delete("password_confirmation")
+      new_params = params.require(:user).permit(:email, :username)
+      change_password = false
+    end
+
     # Retrieves current_user from db and updates it with the new_params hash
     @user = User.find(current_user.id)
-    if @user.update_with_password(new_params)
+    is_valid = false
+
+    # Changes password if fields were included and user is valid
+    if change_password
+      is_valid = @user.update_with_password(new_params)
+    else
+      @user.update_without_password(new_params)
+    end
+
+    if is_valid
       set_flash_message :notice, :updated
       sign_in @user, bypass: true
       redirect_to after_update_path_for(@user)
     else
-      render "edit"
+      render :edit
     end
   end
 end
