@@ -1,11 +1,26 @@
 Rails.application.routes.draw do
+  get 'passwords/new'
+
+  get 'passwords/create'
+
+  get 'sessions/new'
+
+  get 'sessions/create'
+
+  get 'confirmations/new'
+
+  get 'confirmations/create'
+
   get 'registrations/update'
 
   get 'home/index'
 
-  # Tells Rails to use registrations_controller instead of the default.
+  # Tells Rails to use created (customized) controllers instead of the default.
   devise_for :users, :controllers => {
-    :registrations => "registrations"
+    :registrations => "registrations"#,
+    #:confirmations => "confirmations",
+    #:sessions => "sessions",
+    #:passwords => "passwords"
   }
 
   # The priority is based upon order of creation: first created -> highest priority.
