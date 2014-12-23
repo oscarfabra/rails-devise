@@ -36,6 +36,7 @@ class RegistrationsController < Devise::RegistrationsController
       set_flash_message :notice, :updated
       redirect_to after_update_path_for(@user)
     else
+      flash.now.alert = "Could not update user. Check your details."
       render "edit"
     end
   end

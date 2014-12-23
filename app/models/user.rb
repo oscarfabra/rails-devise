@@ -11,7 +11,11 @@ class User < ActiveRecord::Base
 
   # Overwrites devise function to authenticate using sign_in field
   def self.find_first_by_auth_conditions(warden_conditions)
-    conditions = warden_conditions.dup
+
+    conditions = (warden_conditions.dup.respond_to?(:permit))?
+        warden_conditions.dup.permit! :
+        warden_conditions.dup
+
     if login = conditions.delete(:login)
       where(conditions).where(["lower(username) = :value OR lower(email) = :value",
                                { :value => login.downcase }]).first
