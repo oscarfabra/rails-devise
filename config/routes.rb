@@ -1,4 +1,10 @@
 Rails.application.routes.draw do
+  get 'employees/index'
+
+  get 'admins/index'
+
+  devise_for :employees
+  devise_for :admins
   get 'passwords/new'
 
   get 'passwords/create'
