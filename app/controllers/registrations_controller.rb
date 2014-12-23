@@ -40,4 +40,16 @@ class RegistrationsController < Devise::RegistrationsController
       render "edit"
     end
   end
+
+  # Called when user cancels its account.
+  def destroy
+    @user = User.find(current_user.id)
+    @user.is_active = 0  # not active
+    if @user.save
+      sign_out @user
+      redirect_to root_path
+    else
+      render "edit"
+    end
+  end
 end
